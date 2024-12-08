@@ -9,6 +9,7 @@ This project combines several Python packages to create an interactive 3D chatbo
 
 ## Example of prototypes
 ![Example GIF](./assets/video.gif) 
+
 From [3D holographic fan-Cindy](https://www.youtube.com/@3dholographicfan-cindy978)
 
 Below is a table summarizing the primary Python packages used in this project, their roles, and how they enable the chatbot and holographic integration.
