@@ -350,7 +350,7 @@ except KeyboardInterrupt:
 
 ## Example of prototype
 
-[example.gif](example.gif)
+![Example GIF](example.gif) 
 
 
 ## **Conclusion**
