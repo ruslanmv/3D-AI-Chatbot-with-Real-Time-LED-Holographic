@@ -7,6 +7,11 @@ Interactive 3D chatbots combined with **LED holographic fans** bring a futuristi
 
 This project combines several Python packages to create an interactive 3D chatbot, integrating ChatGPT for conversational responses, real-time animations for a 3D model, and holographic LED fan technology for display. Each package contributes to a specific aspect of the pipeline, ensuring smooth interaction between the chatbot, 3D character, and holographic display.
 
+## Example of prototype
+
+![Example GIF](./assets/video.gif) 
+From  3D holographic fan-Cindy
+
 Below is a table summarizing the primary Python packages used in this project, their roles, and how they enable the chatbot and holographic integration.
 
 ---
@@ -348,9 +353,7 @@ except KeyboardInterrupt:
 
 ---
 
-## Example of prototype
 
-![Example GIF](example.gif) 
 
 
 ## **Conclusion**
