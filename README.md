@@ -39,7 +39,7 @@ graph TD
     end
 
     subgraph "3D Character"
-        F --> G[3D Model (glTF/VRM)]
+        F --> G["3D Model (glTF/VRM)"] 
         G --> H(Render & Display)
     end
 
@@ -49,7 +49,12 @@ graph TD
         J --> F
     end
 
-    H --> K(Visual Feedback to User)
+    subgraph "Holographic LED Fan Interaction"
+        H --> L[Streaming 3D Frames to Holographic Fan]
+        L --> M(Holographic Display)
+    end
+
+    M --> K(Visual Feedback to User)
     K --> A
 ```
 
