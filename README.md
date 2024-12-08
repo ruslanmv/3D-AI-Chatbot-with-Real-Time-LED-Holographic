@@ -348,6 +348,11 @@ except KeyboardInterrupt:
 
 ---
 
+## Example of prototype
+
+[example.gif](example.gif)
+
+
 ## **Conclusion**
 
 This comprehensive tutorial shows how to integrate a 3D chatbot with real-time animations and display it on a holographic LED fan. The interactive pipeline connects ChatGPT responses to 3D animations, creating a dynamic and engaging user experience.
