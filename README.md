@@ -1,588 +1,427 @@
-# **Building an Interactive 3D Chatbot with Real-Time Holographic LED Fan Integration: Step-by-Step Guide**
+# Holographic Chatbot
 
-This tutorial demonstrates how to create an **interactive 3D chatbot** with real-time animations, powered by **ChatGPT** and displayed on **Missyou** or **GIWOX holographic LED fans**. We integrate a 3D model, customize animations, and synchronize lip sync with chatbot responses.
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Introduction
-Interactive 3D chatbots combined with **LED holographic fans** bring a futuristic dimension to human-computer interaction. This tutorial extends the concept by integrating **ChatGPT** with **3D holographic fans** (Missyou and GIWOX), enabling real-time conversation and animated chatbot displays in 3D.
+**Interactive 3D AI Chatbot with Real-Time Holographic LED Fan Integration**
 
-This project combines several Python packages to create an interactive 3D chatbot, integrating ChatGPT for conversational responses, real-time animations for a 3D model, and holographic LED fan technology for display. Each package contributes to a specific aspect of the pipeline, ensuring smooth interaction between the chatbot, 3D character, and holographic display.
+Transform conversational AI into a stunning holographic experience! This production-ready application combines OpenAI's ChatGPT with 3D animations, text-to-speech synthesis, and holographic LED fan display technology to create an immersive, futuristic chatbot interface.
 
-## Example of prototype
-![Example GIF](./assets/video.gif) 
+![Demo](./assets/video.gif)
 
-From [3D holographic fan-Cindy](https://www.youtube.com/@3dholographicfan-cindy978)
+## 🌟 Features
 
-Below is a table summarizing the primary Python packages used in this project, their roles, and how they enable the chatbot and holographic integration.
+- **🤖 AI-Powered Conversations**: Leverages OpenAI's ChatGPT for intelligent, context-aware responses
+- **🎨 3D Rendering**: Real-time 3D text animations using matplotlib
+- **🔊 Text-to-Speech**: Natural voice synthesis with Google TTS
+- **👄 Lip Synchronization**: Phoneme-based lip sync for realistic mouth movements
+- **📡 Holographic Display**: Stream animations to Missyou/GIWOX LED holographic fans
+- **🎬 Frame Processing**: Advanced image optimization for LED fan compatibility
+- **⚙️ Fully Configurable**: Environment-based configuration with pydantic
+- **🧪 Production-Ready**: Type hints, comprehensive error handling, and logging
+- **📊 Interactive Mode**: Real-time chat interface with statistics
 
----
+## 📋 Table of Contents
 
-### **Overview Table**
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Configuration](#-configuration)
+- [Usage](#-usage)
+- [Architecture](#-architecture)
+- [Development](#-development)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
 
-| **Package**       | **Description**                   | **File Types**       | **ChatGPT Integration**                                 | **3D Chatbot + LED Fan**                                 | **3D Chatbot AI Integration**                                                                                   |
-|--------------------|-----------------------------------|-----------------------|---------------------------------------------------------|----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| `matplotlib`      | A versatile plotting library for generating simple 3D animations. | Rendered Frames (PNG) | - Display chatbot responses as text or gestures in 3D   | - Real-time gesture animations for chatbot display       | - **3D Chatbot:** Create dynamic animations tied to ChatGPT responses.                                          |
-| `openai`          | OpenAI's library for accessing ChatGPT and GPT models. | Text                  | - Generate intelligent chatbot responses                | - Drive animations and lip sync based on chatbot text    | - **AI-driven expressions:** Determine animations and expressions based on conversation context.                 |
-| `Pillow`          | Python Imaging Library for image processing and format conversion. | PNG                   | - Enhance or modify chatbot-generated frames            | - Convert animations to fan-compatible formats           | - **Lip sync simulation:** Adjust animations to match speech phonemes dynamically.                              |
-| `requests`        | A library for sending HTTP requests to APIs. | API (HTTP)            | - Automate chatbot-to-fan communication                 | - Stream chatbot animations and text to holographic fans | - **Seamless streaming:** Enable real-time frame uploads to holographic displays.                               |
-| `pygame`          | A library for real-time graphics and game development. | Real-time Display     | - Simulate animations locally for debugging             | - Preview holographic animations before streaming        | - **Real-time rendering:** Test animations in a graphical window before finalizing for LED fans.                |
-| `pygltflib`       | A library for working with glTF/GLB 3D model files. | glTF/GLB              | - Customize 3D character animations via API             | - Render and animate chatbot character models            | - **3D model integration:** Adjust animations and blend shapes based on chatbot emotions and phoneme analysis.  |
-| `gtts`            | Google Text-to-Speech for speech synthesis. | MP3                   | - Convert chatbot responses into speech audio           | - Synchronize audio with 3D lip animations               | - **Text-to-Speech:** Generate spoken responses tied to chatbot text output.                                    |
+## 🔧 Prerequisites
 
----
+### System Requirements
 
-### **How These Packages Work Together**
-- **Core AI Integration**:
-  - `openai` generates intelligent chatbot responses based on user input, serving as the brain of the chatbot.
-  
-- **3D Visualization and Animation**:
-  - `matplotlib` dynamically renders 3D animations representing the chatbot's response, while `pygltflib` manages detailed 3D character animations.
-  - `pygame` serves as a testing environment for previewing animations before sending them to the holographic fan.
+- **Python**: 3.9 or higher
+- **Operating System**: Linux, macOS, or Windows
+- **Hardware**: Holographic LED Fan (Missyou or GIWOX) - optional for testing
 
-- **Image Processing and Holographic Streaming**:
-  - `Pillow` processes the generated frames, ensuring compatibility with the holographic LED fan's display requirements.
-  - `requests` streams the processed frames to the LED fan's API for real-time visualization.
+### System Dependencies
 
-- **Audio and Lip Sync**:
-  - `gtts` synthesizes speech for chatbot responses, while `pygltflib` adjusts the character's mouth animations to match the audio using phoneme analysis.
----
-
-## **Pipeline Overview**
-
-```mermaid
-graph TD
-    subgraph "User Interaction"
-        A[User Speaks] --> B(Speech-to-Text)
-    end
-
-    subgraph "Natural Language Processing (NLP)"
-        B --> C{ChatGPT}
-        C -- AI Response --> D(Intent & Emotion Recognition)
-    end
-
-    subgraph "Animation Control"
-        D --> E[Animation Selection]
-        E --> F(glTF/VRM Animation)
-    end
-
-    subgraph "3D Character"
-        F --> G["3D Model (glTF/VRM)"] 
-        G --> H(Render & Display)
-    end
-
-    subgraph "Lip Sync"
-        C -- Speech Output --> I(Text-to-Speech)
-        I --> J(Phoneme Analysis)
-        J --> F
-    end
-
-    subgraph "Holographic LED Fan Interaction"
-        H --> L[Streaming 3D Frames to Holographic Fan]
-        L --> M(Holographic Display)
-    end
-
-    M --> K(Visual Feedback to User)
-    K --> A
-```
-
----
-
-## **Table of Contents**
-
-1. [Setting Up the Environment](#setting-up-the-environment)
-2. [Loading and Customizing a 3D Model](#loading-and-customizing-a-3d-model)
-3. [Integrating ChatGPT with the 3D Model](#integrating-chatgpt-with-the-3d-model)
-4. [Adding Lip Sync and Animations](#adding-lip-sync-and-animations)
-5. [Streaming Real-Time 3D Frames to the LED Fan](#streaming-real-time-3d-frames-to-the-led-fan)
-6. [Full Python Code](#full-python-code)
-7. [Testing and Debugging](#testing-and-debugging)
-
----
-
-## **1. Setting Up the Environment**
-
-### Install Required Libraries
+Install the following system packages:
 
 ```bash
-pip install openai pygltflib pillow requests pygame gtts
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install -y ffmpeg espeak-ng mpg123
+
+# macOS (with Homebrew)
+brew install ffmpeg espeak-ng mpg123
+
+# Windows
+# Download and install ffmpeg, espeak-ng manually
 ```
 
-- **`openai`:** For ChatGPT API integration.
-- **`pygltflib`:** To load and modify 3D models (glTF/VRM).
-- **`Pillow`:** For frame image processing.
-- **`requests`:** For sending frames to the LED fan API.
-- **`pygame`:** For rendering animations locally.
-- **`gtts`:** For generating speech from chatbot responses.
+### API Keys
 
----
+- **OpenAI API Key**: Sign up at [OpenAI](https://platform.openai.com/) and generate an API key
 
-## **2. Loading and Customizing a 3D Model**
+## 📦 Installation
 
-### Choose a 3D Model
-Select a glTF/GLB or VRM model for your chatbot. Use platforms like:
-- [**Sketchfab**](https://www.sketchfab.com/)
-- [**Mixamo**](https://www.mixamo.com/)
+### Option 1: Using `uv` (Recommended)
 
-### Python Code: Load and Customize the Model
-Load the model using `pygltflib` and apply custom animations.
-
-```python
-import pygltflib
-
-# Load a 3D model (glTF format)
-model = pygltflib.GLTF2()
-model.load_file("character_model.glb")
-
-# Apply a simple customization (e.g., scaling the character)
-def customize_model():
-    for node in model.nodes:
-        if node.name == "Head":  # Customize the head node
-            node.scale = [1.2, 1.2, 1.2]  # Scale the head
-    model.save("customized_character.glb")
-    
-customize_model()
-```
-
----
-
-## **3. Integrating ChatGPT with the 3D Model**
-
-### Obtain ChatGPT Responses
-Integrate ChatGPT for conversational responses.
-
-```python
-import openai
-
-openai.api_key = "your-api-key"
-
-def get_chat_response(user_input):
-    """
-    Get a response from ChatGPT.
-    """
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=user_input,
-        max_tokens=150,
-        temperature=0.7
-    )
-    return response.choices[0].text.strip()
-```
-
----
-
-## **4. Adding Lip Sync and Animations**
-
-### Generate Speech and Analyze Phonemes
-Use `gTTS` for speech generation and basic phoneme analysis.
-
-```python
-from gtts import gTTS
-import os
-
-def generate_speech(text):
-    """
-    Generate speech from text using gTTS.
-    """
-    tts = gTTS(text)
-    tts.save("response.mp3")
-    os.system("mpg123 response.mp3")
-```
-
-### Apply Lip Sync to the 3D Model
-Map phonemes to blend shapes in the glTF/VRM model.
-
-```python
-def apply_lip_sync(phoneme):
-    for node in model.nodes:
-        if node.name == "Mouth":
-            if phoneme == "A":
-                node.scale = [1.1, 1.1, 1.1]
-            elif phoneme == "O":
-                node.scale = [1.3, 1.3, 1.3]
-    model.save("lip_synced_character.glb")
-```
-
-
-## **4.1 Fan Integration Setup** 
-
-### Configuring Holographic LED Fans
-
-To successfully display animations on holographic LED fans like **Missyou** or **GIWOX**, you need to set up the fan's API or SDK. Follow these steps to ensure smooth integration:
-
-1. **Check Fan API Documentation**: Refer to the official documentation for your fan model to identify supported file formats, resolutions, and API endpoints. Commonly supported formats include:
-   - **PNG** for individual frames.
-   - **MP4** for video animations.
-
-2. **Network Configuration**:
-   - Ensure the fan is connected to the same local network as your computer.
-   - Obtain the IP address of the fan (often displayed in the fan's mobile app or web interface).
-
-3. **Verify Fan API**:
-   Test the API connection by uploading a static image.
+[uv](https://github.com/astral-sh/uv) is a fast Python package manager by Astral.
 
 ```bash
-# Example cURL command to test fan API connectivity
-curl -X POST -F "file=@example.png" http://<fan-ip-address>/upload_frame
+# Install uv
+pip install uv
+
+# Clone the repository
+git clone https://github.com/ruslanmv/3D-AI-Chatbot-with-Real-Time-LED-Holographic.git
+cd 3D-AI-Chatbot-with-Real-Time-LED-Holographic
+
+# Install dependencies
+make install
+
+# Or for development with all extras
+make install-dev
 ```
 
-### Sample Python Code: Upload a Test Frame
-
-```python
-import requests
-
-FAN_API_URL = "http://<fan-ip-address>/upload_frame"
-
-def test_fan_api(image_path):
-    """
-    Upload a test frame to the holographic fan.
-    """
-    with open(image_path, 'rb') as img:
-        response = requests.post(FAN_API_URL, files={'frame': img})
-    if response.status_code == 200:
-        print("Test frame uploaded successfully!")
-    else:
-        print(f"Failed to upload frame. Status code: {response.status_code}")
-
-test_fan_api("example.png")
-```
-
----
-
-## **4.2 Frame Conversion for Fan Compatibility** 
-
-### Converting Animations to Compatible Formats
-
-Holographic LED fans may require frames or animations in a specific resolution and format. You can use `ffmpeg` to prepare frames for compatibility.
-
-#### Install `ffmpeg`
+### Option 2: Using pip
 
 ```bash
-sudo apt update
-sudo apt install ffmpeg
+# Clone the repository
+git clone https://github.com/ruslanmv/3D-AI-Chatbot-with-Real-Time-LED-Holographic.git
+cd 3D-AI-Chatbot-with-Real-Time-LED-Holographic
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install the package
+pip install -e .
+
+# Or for development
+pip install -e ".[dev,docs]"
 ```
 
-#### Convert PNG Frames to MP4 Animation
+### Complete Setup
+
+For complete setup including system dependencies:
 
 ```bash
-# Convert a series of PNG frames into an MP4 video
-ffmpeg -r 30 -i frame_%03d.png -vf "scale=256:256" -vcodec libx264 animation.mp4
+make setup
 ```
 
-#### Python Code: Save Compatible Frames
+## 🚀 Quick Start
 
-```python
-from PIL import Image
+### 1. Configure Environment
 
-def convert_to_fan_format(input_image_path, output_image_path, size=(256, 256)):
-    """
-    Convert an image to the fan's required resolution and format.
-    """
-    with Image.open(input_image_path) as img:
-        img = img.resize(size, Image.ANTIALIAS)
-        img.save(output_image_path, format="PNG")
-
-convert_to_fan_format("original_frame.png", "fan_ready_frame.png")
-```
-
----
-
-## **4.3 Phoneme Extraction for Lip Sync** 
-
-### Extracting Phonemes for Lip Sync
-
-To map chatbot responses to lip movements, extract phonemes from text or audio. Use the `phonemizer` library for text-to-phoneme conversion.
-
-#### Install `phonemizer`
+Copy the example environment file and edit with your settings:
 
 ```bash
-pip install phonemizer
+cp .env.example .env
 ```
 
-#### Python Code: Text-to-Phoneme Conversion
+Edit `.env` and add your OpenAI API key:
+
+```env
+OPENAI_API_KEY=sk-your-api-key-here
+FAN_API_URL=http://192.168.1.100  # Your fan's IP address
+```
+
+### 2. Run the Application
+
+#### Interactive Mode (Default)
+
+```bash
+# Using the installed command
+holographic-chatbot
+
+# Or using make
+make run
+
+# Or using Python module
+python -m holographic_chatbot.main
+```
+
+#### Test System Components
+
+```bash
+holographic-chatbot --test
+```
+
+### 3. Example Session
+
+```
+🌟 Holographic Chatbot - Interactive Mode 🌟
+
+Welcome! Type your messages below (or 'quit' to exit)
+Commands:
+  - 'quit' or 'exit': Exit the application
+  - 'clear': Clear conversation history
+  - 'stats': Show statistics
+
+🎤 You: Hello, how are you?
+
+🤖 Bot: Hello! I'm doing great, thank you for asking! I'm excited
+to help you explore the fascinating world of holographic AI.
+How can I assist you today?
+```
+
+## ⚙️ Configuration
+
+All configuration is managed through environment variables (`.env` file) or command-line settings.
+
+### Key Configuration Options
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OPENAI_API_KEY` | OpenAI API key (required) | - |
+| `OPENAI_MODEL` | GPT model to use | `gpt-4` |
+| `FAN_API_URL` | Holographic fan API base URL | `http://192.168.1.100` |
+| `FAN_FRAME_RATE` | Animation frame rate (fps) | `30` |
+| `FAN_RESOLUTION_WIDTH` | Frame width in pixels | `256` |
+| `FAN_RESOLUTION_HEIGHT` | Frame height in pixels | `256` |
+| `LOG_LEVEL` | Logging verbosity | `INFO` |
+| `ENABLE_AUDIO` | Enable text-to-speech | `true` |
+| `ENABLE_LIP_SYNC` | Enable lip synchronization | `true` |
+| `ENABLE_FAN_STREAMING` | Enable fan streaming | `true` |
+
+See [.env.example](.env.example) for complete configuration options.
+
+## 📖 Usage
+
+### Python API
 
 ```python
-from phonemizer import phonemize
+from holographic_chatbot.main import HolographicChatbot
 
-def extract_phonemes(text, language='en-us'):
-    """
-    Convert text to phonemes using the phonemizer library.
-    """
-    phonemes = phonemize(text, language=language, backend='espeak', strip=True)
-    return phonemes
+# Initialize the chatbot
+bot = HolographicChatbot()
 
-# Example usage
-text = "Hello, how are you?"
-phonemes = extract_phonemes(text)
-print(f"Phonemes: {phonemes}")
+# Process a single input
+response = bot.process_user_input("What's the weather like?")
+print(response)
+
+# Run interactive mode
+bot.interactive_mode()
+
+# Clean up resources
+bot.cleanup()
 ```
 
-#### Map Phonemes to 3D Mouth Movements
+### Component Usage
 
-Extend the `apply_lip_sync` function:
+#### ChatGPT Integration
 
 ```python
-def apply_lip_sync(phoneme):
-    """
-    Adjust mouth animations based on phoneme.
-    """
-    for node in model.nodes:
-        if node.name == "Mouth":
-            if phoneme in ["A", "E"]:
-                node.scale = [1.1, 1.1, 1.1]
-            elif phoneme in ["O", "U"]:
-                node.scale = [1.3, 1.3, 1.3]
-    model.save("lip_synced_character.glb")
+from holographic_chatbot.chatbot import ChatGPTClient
+from holographic_chatbot.config import get_settings
+
+settings = get_settings()
+client = ChatGPTClient(settings)
+
+response = client.get_response("Tell me a joke")
+print(response)
 ```
+
+#### 3D Rendering
+
+```python
+from holographic_chatbot.animation import Renderer3D
+from holographic_chatbot.config import get_settings
+
+settings = get_settings()
+renderer = Renderer3D(settings)
+
+frame = renderer.generate_frame("Hello World", angle=45)
+renderer.save_frame(frame, Path("output.png"))
+```
+
+#### Speech Synthesis
+
+```python
+from holographic_chatbot.audio import SpeechSynthesizer
+from holographic_chatbot.config import get_settings
+
+settings = get_settings()
+synthesizer = SpeechSynthesizer(settings)
+
+audio_path = synthesizer.synthesize("Hello, welcome!")
+print(f"Audio saved to: {audio_path}")
+```
+
+For detailed examples, see [docs/TUTORIAL.md](docs/TUTORIAL.md).
+
+## 🏗️ Architecture
+
+```
+holographic-chatbot/
+├── src/holographic_chatbot/
+│   ├── __init__.py           # Package initialization
+│   ├── config.py             # Configuration management
+│   ├── main.py               # Application entry point
+│   ├── chatbot/              # ChatGPT integration
+│   │   ├── __init__.py
+│   │   └── gpt_integration.py
+│   ├── animation/            # 3D rendering & models
+│   │   ├── __init__.py
+│   │   ├── renderer.py
+│   │   └── model_loader.py
+│   ├── fan/                  # Holographic fan integration
+│   │   ├── __init__.py
+│   │   ├── api_client.py
+│   │   └── frame_converter.py
+│   ├── audio/                # Speech synthesis & phonemes
+│   │   ├── __init__.py
+│   │   ├── speech_synthesis.py
+│   │   └── phoneme_analyzer.py
+│   └── utils/                # Utilities
+│       ├── __init__.py
+│       └── logger.py
+├── tests/                    # Unit tests
+├── docs/                     # Documentation
+├── examples/                 # Example scripts
+├── models/                   # 3D model files (glTF/GLB)
+├── assets/                   # Media assets
+├── pyproject.toml            # Project metadata & dependencies
+├── Makefile                  # Build automation
+└── README.md                 # This file
+```
+
+### Data Flow
+
+```
+User Input → ChatGPT → Response Text
+                ↓
+        ┌───────┴────────┐
+        ↓                ↓
+    TTS Audio      3D Animation
+        ↓                ↓
+    Phonemes      Frame Rendering
+        ↓                ↓
+    Lip Sync ←───→ Frame Processing
+                     ↓
+              Holographic Fan
+```
+
+## 🛠️ Development
+
+### Setup Development Environment
+
+```bash
+make install-dev
+```
+
+### Code Quality Tools
+
+```bash
+# Format code
+make format
+
+# Run linters
+make lint
+
+# Type checking
+make type-check
+
+# Run all quality checks
+make quality
+```
+
+### Project Commands
+
+```bash
+# Show all available commands
+make help
+
+# Run tests
+make test
+
+# Run tests with coverage
+make test-cov
+
+# Build distribution
+make build
+
+# Clean build artifacts
+make clean
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+make test
+
+# Run with coverage report
+make test-cov
+
+# Run specific test file
+pytest tests/test_config.py -v
+
+# Run with specific marker
+pytest -m "not slow" -v
+```
+
+Coverage reports are generated in `htmlcov/index.html`.
+
+## 📝 License
+
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+
+```
+Copyright 2025 Ruslan Magana
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+```
+
+## 👤 Author
+
+**Ruslan Magana**
+
+- Website: [ruslanmv.com](https://ruslanmv.com)
+- GitHub: [@ruslanmv](https://github.com/ruslanmv)
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Please ensure:
+- Code follows PEP 8 style guidelines
+- All tests pass (`make test`)
+- Type hints are included
+- Documentation is updated
+
+## 🙏 Acknowledgments
+
+- **OpenAI** for ChatGPT API
+- **Missyou & GIWOX** for holographic LED fan technology
+- **3D holographic fan-Cindy** for inspiration and demo content
+- The open-source community for amazing tools and libraries
+
+## 📚 Resources
+
+- [Step-by-Step Tutorial](docs/TUTORIAL.md) - Comprehensive tutorial
+- [API Documentation](docs/API.md) - Detailed API reference (coming soon)
+- [OpenAI API Docs](https://platform.openai.com/docs)
+- [Holographic Fan Setup Guide](docs/FAN_SETUP.md) (coming soon)
+
+## 📊 Project Status
+
+**Version**: 1.0.0
+**Status**: Production Ready ✅
 
 ---
 
-## **5. Streaming Real-Time 3D Frames to the LED Fan**
-
-### Generate 3D Frames
-Render the 3D chatbot animation dynamically.
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-import io
-
-# Initialize 3D plot
-fig = plt.figure(figsize=(5, 5))
-ax = fig.add_subplot(111, projection='3d')
-
-def generate_frame(text, angle):
-    """
-    Generate a 3D frame displaying rotating chatbot text.
-    """
-    ax.clear()
-    ax.text(0, 0, 0, text, color="blue", fontsize=15, ha="center", va="center")
-    ax.set_xlim([-1, 1])
-    ax.set_ylim([-1, 1])
-    ax.set_zlim([-1, 1])
-    ax.view_init(elev=20, azim=angle)
-    
-    fig.canvas.draw()
-    frame = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-    frame = frame.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-    return frame
-```
-
-### Stream Frames to the Fan
-Send frames to the holographic fan in real time.
-
-```python
-import requests
-import time
-
-FAN_API_URL = "http://<fan-ip-address>/upload_frame"
-
-def send_frame_to_fan(frame):
-    """
-    Send a single frame to the LED fan.
-    """
-    buffer = io.BytesIO()
-    image = Image.fromarray(frame)
-    image.save(buffer, format="PNG")
-    buffer.seek(0)
-
-    response = requests.post(FAN_API_URL, files={'frame': buffer})
-    return response.status_code
-```
-
-## **5.1 Error Handling for Streaming and API Integration** 
-
-### Handle API Errors
-
-Add robust error handling for fan API failures:
-
-```python
-import requests
-
-def send_frame_to_fan(frame):
-    """
-    Send a frame to the fan and handle potential errors.
-    """
-    try:
-        buffer = io.BytesIO()
-        image = Image.fromarray(frame)
-        image.save(buffer, format="PNG")
-        buffer.seek(0)
-
-        response = requests.post(FAN_API_URL, files={'frame': buffer})
-        response.raise_for_status()
-        print("Frame sent successfully!")
-    except requests.exceptions.RequestException as e:
-        print(f"Error sending frame to fan: {e}")
-```
-
----
-
-## **5.2 Real-Time Synchronization**
-
-### Using Asynchronous Programming for Sync
-
-Real-time synchronization between animations, audio, and responses can be achieved using `asyncio`.
-
-#### Python Code: Synchronize Audio and Animation
-
-```python
-import asyncio
-from gtts import gTTS
-import os
-
-async def play_audio_and_animate(text, animation_func):
-    """
-    Play audio and animate simultaneously.
-    """
-    # Generate speech
-    tts = gTTS(text)
-    tts.save("response.mp3")
-
-    # Play audio in the background
-    audio_task = asyncio.create_task(asyncio.to_thread(os.system, "mpg123 response.mp3"))
-
-    # Animate
-    animation_task = asyncio.create_task(animation_func())
-
-    await asyncio.gather(audio_task, animation_task)
-```
-
-
-
-
----
-
-## **6. Full Python Code**
-
-Here is the complete integrated script:
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-import io
-import requests
-import openai
-from gtts import gTTS
-import time
-
-# ChatGPT API key
-openai.api_key = "your-api-key"
-
-# Initialize 3D plot
-fig = plt.figure(figsize=(5, 5))
-ax = fig.add_subplot(111, projection='3d')
-
-# Fan API endpoint
-FAN_API_URL = "http://<fan-ip-address>/upload_frame"
-
-# Generate a 3D frame
-def generate_frame(text, angle):
-    ax.clear()
-    ax.text(0, 0, 0, text, color="blue", fontsize=15, ha="center", va="center")
-    ax.set_xlim([-1, 1])
-    ax.set_ylim([-1, 1])
-    ax.set_zlim([-1, 1])
-    ax.view_init(elev=20, azim=angle)
-    
-    fig.canvas.draw()
-    frame = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-    frame = frame.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-    return frame
-
-# Get ChatGPT response
-def get_chat_response(user_input):
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=user_input,
-        max_tokens=150,
-        temperature=0.7
-    )
-    return response.choices[0].text.strip()
-
-# Generate speech
-def generate_speech(text):
-    tts = gTTS(text)
-    tts.save("response.mp3")
-    os.system("mpg123 response.mp3")
-
-# Stream frames to the fan
-def send_frame_to_fan(frame):
-    buffer = io.BytesIO()
-    image = Image.fromarray(frame)
-    image.save(buffer, format="PNG")
-    buffer.seek(0)
-
-    response = requests.post(FAN_API_URL, files={'frame': buffer})
-    return response.status_code
-
-# Main loop
-angle = 0
-try:
-    while True:
-        user_input = input("You: ")
-        chatbot_response = get_chat_response(user_input)
-        generate_speech(chatbot_response)
-        
-        for _ in range(60):  # Display for 2 seconds
-            frame = generate_frame(chatbot_response, angle)
-            send_frame_to_fan(frame)
-            angle += 6
-            time.sleep(0.033)
-except KeyboardInterrupt:
-    print("Streaming stopped.")
-```
-
----
-
-## **7. Testing and Debugging**
-
-1. **Fan Connectivity**:
-   - Test the fan's API using a static image upload.
-2. **Streaming Performance**:
-   - Optimize frame resolution and transmission speed for smooth animations.
-3. **Chatbot Responses**:
-   - Validate ChatGPT's responses and ensure they match user input.
-
-
-## **7.1 Testing Checklist** 
-
-### Step-by-Step Testing
-
-1. **Test ChatGPT Integration**:
-   - Verify responses with varying prompts.
-   - Ensure the API key is configured correctly.
-
-```python
-print(get_chat_response("What is the capital of France?"))
-```
-
-2. **Test 3D Animation Locally**:
-   - Render animations using `pygame` or `matplotlib`.
-   - Check for frame generation errors.
-
-3. **Test Fan Connectivity**:
-   - Upload static images to the fan's API.
-   - Verify frame display on the fan.
-
-4. **Test Full Pipeline**:
-   - Combine ChatGPT, 3D animations, and fan streaming.
-   - Ensure synchronization between audio and animations.
-
----
-
-## **Conclusion**
-
-This comprehensive tutorial shows how to integrate a 3D chatbot with real-time animations and display it on a holographic LED fan. The interactive pipeline connects ChatGPT responses to 3D animations, creating a dynamic and engaging user experience.
-### Scaling for Complex Animations
-
-For more complex animations or multiple fans:
-- Use threading or multiprocessing for parallel frame generation.
-- Integrate advanced rendering engines like Unity or Unreal Engine.
-
-
-### Customizing the Chatbot
-
-To change the character's voice or appearance:
-- Use platforms like [ElevenLabs](https://www.elevenlabs.io/) for voice cloning.
-- Modify the glTF/GLB model using Blender or Mixamo for unique animations.
+**Made with ❤️ by [Ruslan Magana](https://ruslanmv.com)**

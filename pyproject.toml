@@ -1,0 +1,236 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "holographic-chatbot"
+version = "1.0.0"
+description = "Interactive 3D AI Chatbot with Real-Time Holographic LED Fan Integration"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [
+    { name = "Ruslan Magana", email = "contact@ruslanmv.com" },
+]
+maintainers = [
+    { name = "Ruslan Magana", email = "contact@ruslanmv.com" },
+]
+keywords = [
+    "chatbot",
+    "3d",
+    "holographic",
+    "led-fan",
+    "ai",
+    "openai",
+    "chatgpt",
+    "animation",
+    "lip-sync",
+    "tts",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Graphics :: 3D Rendering",
+    "Topic :: Communications :: Chat",
+]
+
+dependencies = [
+    "openai>=1.54.0,<2.0.0",
+    "pygltflib>=1.16.2,<2.0.0",
+    "pillow>=10.4.0,<11.0.0",
+    "requests>=2.32.3,<3.0.0",
+    "pygame>=2.6.0,<3.0.0",
+    "gtts>=2.5.3,<3.0.0",
+    "phonemizer>=3.3.0,<4.0.0",
+    "numpy>=1.26.4,<2.0.0",
+    "matplotlib>=3.9.2,<4.0.0",
+    "python-dotenv>=1.0.1,<2.0.0",
+    "pydantic>=2.9.2,<3.0.0",
+    "pydantic-settings>=2.6.0,<3.0.0",
+    "typing-extensions>=4.12.2,<5.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.3,<9.0.0",
+    "pytest-cov>=6.0.0,<7.0.0",
+    "pytest-asyncio>=0.24.0,<1.0.0",
+    "pytest-mock>=3.14.0,<4.0.0",
+    "black>=24.10.0,<25.0.0",
+    "isort>=5.13.2,<6.0.0",
+    "flake8>=7.1.1,<8.0.0",
+    "mypy>=1.13.0,<2.0.0",
+    "pylint>=3.3.1,<4.0.0",
+    "ruff>=0.7.4,<1.0.0",
+    "pre-commit>=4.0.1,<5.0.0",
+]
+docs = [
+    "sphinx>=8.1.3,<9.0.0",
+    "sphinx-rtd-theme>=3.0.2,<4.0.0",
+    "myst-parser>=4.0.0,<5.0.0",
+]
+
+[project.urls]
+Homepage = "https://ruslanmv.com"
+Documentation = "https://github.com/ruslanmv/3D-AI-Chatbot-with-Real-Time-LED-Holographic"
+Repository = "https://github.com/ruslanmv/3D-AI-Chatbot-with-Real-Time-LED-Holographic"
+"Bug Tracker" = "https://github.com/ruslanmv/3D-AI-Chatbot-with-Real-Time-LED-Holographic/issues"
+
+[project.scripts]
+holographic-chatbot = "holographic_chatbot.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/holographic_chatbot"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+]
+
+# Black configuration
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311", "py312"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+# isort configuration
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_gitignore = true
+
+# mypy configuration
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+follow_imports = "normal"
+strict_optional = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pygltflib.*",
+    "pygame.*",
+    "gtts.*",
+    "phonemizer.*",
+]
+ignore_missing_imports = true
+
+# pytest configuration
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=holographic_chatbot",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# Ruff configuration (modern linter)
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+# Pylint configuration
+[tool.pylint.messages_control]
+disable = [
+    "C0111",  # missing-docstring
+    "C0103",  # invalid-name
+    "R0903",  # too-few-public-methods
+]
+
+[tool.pylint.format]
+max-line-length = 100
